@@ -38,7 +38,7 @@ PS.init = function( system, options ) {
 	PS.border( PS.ALL, PS.ALL, 0 );
 	PS.gridColor( 0x737070 );
 
-	PS.statusText( "Click to play" )
+	PS.statusText( "Mosaic Maker" )
 
 	// Install additional initialization code
 	// here as needed
