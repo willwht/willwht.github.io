@@ -223,13 +223,14 @@ PS.enter = function( x, y, data, options ) {
 	var iter;
 	var xiter;
 
-	switch (Math.floor(Math.random() * 12)) {
+	switch (Math.floor(Math.random() * 4)) {
 		case 0:
 			//PS.debug("0")
 			iter = y;
 			for (xiter = 0; xiter < 31; xiter++) {
 				PS.color(xiter, iter, PS.COLOR_WHITE);
 			}
+			PS.audioPlay( "xylo_a4", { volume: 0.25 });
 			break;
 		case 1:
 			//PS.debug("1")
@@ -237,10 +238,9 @@ PS.enter = function( x, y, data, options ) {
 			for (xiter = 0; xiter < 31; xiter++) {
 				PS.color(iter, xiter, PS.COLOR_WHITE);
 			}
+			PS.audioPlay( "xylo_a4", { volume: 0.25 });
 			break;
 	}
-
-	PS.audioPlay( "xylo_a4", { volume: 0.25 });
 
 	// Add code here for when the mouse cursor/touch enters a bead.
 };
