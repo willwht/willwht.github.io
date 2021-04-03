@@ -29,7 +29,7 @@ PS.init = function( system, options ) {
 	// Use only ALPHABETIC characters
 	// No numbers, spaces or punctuation!
 
-	const TEAM = "teamname";
+	const TEAM = "topaz";
 
 	// Begin with essential setup
 	// Establish initial grid size
@@ -48,15 +48,15 @@ PS.init = function( system, options ) {
 	// DO NOT MODIFY THIS FUNCTION CALL
 	// except as instructed
 
-	/*
+
 	PS.dbLogin( "imgd2900", TEAM, function ( id, user ) {
 		if ( user === PS.ERROR ) {
-			return PS.dbErase( TEAM );
+			return;
 		}
 		PS.dbEvent( TEAM, "startup", user );
-		PS.dbSave( TEAM, PS.CURRENT, { discard : true } );
-	}, { active : false } );
-	*/
+		PS.dbSend( TEAM, PS.CURRENT, { discard : true } );
+	}, { active : true } );
+
 };
 
 /*
