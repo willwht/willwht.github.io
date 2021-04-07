@@ -41,8 +41,12 @@ PS.init = function( system, options ) {
 	PS.border( PS.ALL, PS.ALL, 0 );
 	PS.gridColor( 0x737070 );
 
+	//label top two left beads with what keys can be used in the toy
+
 	PS.glyph(0,0, "C");
 	PS.glyph(1,0, "E");
+
+	//apply a short fade to all beads
 
 	PS.fade( PS.ALL, PS.ALL, 10 );
 
@@ -80,6 +84,8 @@ This function doesn't have to do anything. Any value returned is ignored.
 PS.touch = function( x, y, data, options ) {
 	// Uncomment the following code line
 	// to inspect x/y parameters:
+
+	//if the toy is in the right mode, let people click to make lines
 
 	if(!EVIL_GLOBALS["Mode"]){
 		var iter;
@@ -229,10 +235,14 @@ PS.enter = function( x, y, data, options ) {
 
 	// //PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
 
-	var iter;
-	var xiter;
+	//if the toy is in the right mode, let people erase by moving the mouse around
+	//erasing is intended to not be perfect - one of the ideas behind this toy design is
+	//that having constraints on what can easily be accomplished will promote creativity
 
 	if(EVIL_GLOBALS["Mode"]){
+
+		var iter;
+		var xiter;
 
 		PS.color(x, y, PS.COLOR_WHITE);
 
@@ -307,11 +317,14 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 
 	//PS.debug( "PS.keyDown(): key=" + key + ", shift=" + shift + ", ctrl=" + ctrl + "\n" );
 
+	//if the user presses E, toggle the mode between Erase and Draw
 	if(key == 101){
 		EVIL_GLOBALS["Mode"] ^= 1;
 		PS.audioPlay( "xylo_a4", { volume: 0.25 });
 		//PS.debug( EVIL_GLOBALS["Mode"] );
 	}
+
+	//if the user presses C, reset the color of all beads to white
 	if(key == 99){
 		PS.color(PS.ALL, PS.ALL, PS.COLOR_WHITE)
 
