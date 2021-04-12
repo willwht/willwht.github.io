@@ -382,7 +382,7 @@ PS.init = function( system, options ) {
 
 	CD.init();
 
-	const TEAM = "teamname";
+	const TEAM = "topaz";
 
 	// This code should be the last thing
 	// called by your PS.init() handler.
