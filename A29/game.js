@@ -73,8 +73,8 @@ var CD = ( function() {
 	//"use strict";
 
 	//grid size variables for referencing
-	var GRID_X = 31;
-	var GRID_Y = 31;
+	var GRID_X = 25;
+	var GRID_Y = 25;
 
 	var PLAYER_COLOR = PS.COLOR_CYAN;
 	var FLOOR_COLOR = PS.COLOR_GRAY_LIGHT;
@@ -416,8 +416,8 @@ var CD = ( function() {
 
 				play = false;
 
-				for(var iterat = 0; iterat < 31; iterat++){
-					for(var iterat2 = 0; iterat2 < 31; iterat2++){
+				for(var iterat = 0; iterat < 25; iterat++){
+					for(var iterat2 = 0; iterat2 < 25; iterat2++){
 						PS.color(iterat, iterat2, FLOOR_COLOR);
 						PS.data(iterat, iterat2, IS_FLOOR);
 					}
@@ -512,7 +512,7 @@ PS.init = function( system, options ) {
 	// Uncomment the following code line and change
 	// the x and y parameters as needed.
 
-	PS.gridSize( 31, 31 );
+	PS.gridSize( 25, 25 );
 	PS.border( PS.ALL, PS.ALL, 0 );
 
 	// This is also a good place to display
