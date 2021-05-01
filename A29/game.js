@@ -70,431 +70,432 @@ General layout:
  */
 
 var CD = ( function() {
-	//"use strict";
+		//"use strict";
 
-	//grid size variables for referencing
-	var GRID_X = 25;
-	var GRID_Y = 25;
+		//grid size variables for referencing
+		var GRID_X = 25;
+		var GRID_Y = 25;
 
-	var PLAYER_COLOR = PS.COLOR_CYAN;
-	var FLOOR_COLOR = PS.COLOR_GRAY_LIGHT;
-	var WALL_COLOR = PS.COLOR_GRAY_DARK;
-	var PUSHABLE_COLOR = PS.COLOR_WHITE;
-	var COLLECTIBLE_COLOR = PS.COLOR_ORANGE;
-	var GOAL_COLOR = PS.COLOR_RED;
+		var PLAYER_COLOR = PS.COLOR_CYAN;
+		var FLOOR_COLOR = PS.COLOR_GRAY_LIGHT;
+		var WALL_COLOR = PS.COLOR_GRAY_DARK;
+		var PUSHABLE_COLOR = PS.COLOR_WHITE;
+		var COLLECTIBLE_COLOR = PS.COLOR_ORANGE;
+		var GOAL_COLOR = PS.COLOR_RED;
 
-	//bead ID stuff for bead data purposes
-	var IS_FLOOR = "FLOOR";
-	var IS_WALL = "WALL";
-	var IS_PUSHBLOCK = "PUSHBLOCK";
-	var IS_COLLECTIBLE = "COLLECTIBLE";
-	var IS_GOAL = "GOAL";
+		//bead ID stuff for bead data purposes
+		var IS_FLOOR = "FLOOR";
+		var IS_WALL = "WALL";
+		var IS_PUSHBLOCK = "PUSHBLOCK";
+		var IS_COLLECTIBLE = "COLLECTIBLE";
+		var IS_GOAL = "GOAL";
 
-	//initial timer values for various difficulties (not implemented in this version, just for planning ahead)
-	var HARD_COUNTER_START = 100;
+		//initial timer values for various difficulties (not implemented in this version, just for planning ahead)
+		var HARD_COUNTER_START = 100;
 
-	//Level data
-	var LEVEL_DATA = [
-		{	//index 0, level 0
-			px : 1,
-			py : 1,
+		//Level data
+		var LEVEL_DATA = [
+			{	//index 0, level 0
+				px : 1,
+				py : 1,
 
-			gx : 13,
-			gy : 13,
+				gx : 13,
+				gy : 13,
 
-			//walls : [[2,2],[1,2],[2,1]]
-		},
-		{	//index 1, level 1
-			px : 13,
-			py : 13,
+				//walls : [[2,2],[1,2],[2,1]]
+			},
+			{	//index 1, level 1
+				px : 13,
+				py : 13,
 
-			gx : 1,
-			gy : 1,
+				gx : 1,
+				gy : 1,
 
-			walls : [[2,2],[1,2],[2,1]]
-		},
-		{	//index 2, level 2
-			px : 1,
-			py : 1,
+				walls : [[2,2],[1,2],[2,1]]
+			},
+			{	//index 2, level 2
+				px : 1,
+				py : 1,
 
-			gx : 13,
-			gy : 13,
+				gx : 13,
+				gy : 13,
 
-			walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[12,13],[13,14],[14,13]],
+				walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[12,13],[13,14],[14,13]],
 
-			pushables : [[3,2]]
-		},
-		{	//index 3, level 3
-			px : 13,
-			py : 13,
+				pushables : [[3,2]]
+			},
+			{	//index 3, level 3
+				px : 13,
+				py : 13,
 
-			gx : 1,
-			gy : 1,
+				gx : 1,
+				gy : 1,
 
-			walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
+				walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
 
-			collectibles : [[23, 5]],
+				collectibles : [[23, 5]],
 
-			pushables : [[3,3],[12,11],[13,11],[14,11]]
-		},
-		{	//index 4, level 4
-			px : 1,
-			py : 1,
+				pushables : [[3,3],[12,11],[13,11],[14,11]]
+			},
+			{	//index 4, level 4
+				px : 1,
+				py : 1,
 
-			gx : 12,
-			gy : 13,
+				gx : 12,
+				gy : 13,
 
-			walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
+				walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
 
-			collectibles : [[14, 13]],
+				collectibles : [[14, 13]],
 
-			pushables : [[3,3],[12,11],[13,11],[14,11]]
-		},
+				pushables : [[3,3],[12,11],[13,11],[14,11]]
+			},
 
-		{	//index 5, level 5
-			px : 12,
-			py : 13,
+			{	//index 5, level 5
+				px : 12,
+				py : 13,
 
-			gx : 1,
-			gy : 1,
+				gx : 1,
+				gy : 1,
 
-			walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[14,9],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
+				walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[14,9],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
 
 
 
-			pushables : [[3,3],[12,11],[13,11],[14,11],[2,0]]
-		},
-		{	//index 6, level 6
-			px : 1,
-			py : 1,
+				pushables : [[3,3],[12,11],[13,11],[14,11],[2,0]]
+			},
+			{	//index 6, level 6
+				px : 1,
+				py : 1,
 
-			gx : 19,
-			gy : 19,
+				gx : 19,
+				gy : 19,
 
-			walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[14,9],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
+				walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[14,9],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
 
-			collectibles : [[0, 9]],
+				collectibles : [[0, 9]],
 
-			pushables : [[3,3],[12,11],[13,11],[14,11],[19,20],[19,18],[20,19],[18,19],[21,20],[17,18],[20,21],[18,17],[21,18],[17,20],[18,21],[20,17]]
-		},
-		{	//index 7, level 7
-			px : 19,
-			py : 19,
+				pushables : [[3,3],[12,11],[13,11],[14,11],[19,20],[19,18],[20,19],[18,19],[21,20],[17,18],[20,21],[18,17],[21,18],[17,20],[18,21],[20,17]]
+			},
+			{	//index 7, level 7
+				px : 19,
+				py : 19,
 
-			gx : 1,
-			gy : 1,
+				gx : 1,
+				gy : 1,
 
-			walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[14,9],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
+				walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[14,9],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
 
-			collectibles : [[13, 13]],
+				collectibles : [[13, 13]],
 
-			pushables : [[3,3],[12,11],[19,17],[19,16],[13,11],[14,11],[19,20],[20,19],[17,19],[16,19],[21,20],[17,18],[20,21],[18,17],[21,18],[17,20],[18,21],[20,17]]
-		},
-		{	//index 8, level 8 -- final level
-			px : 1,
-			py : 1,
+				pushables : [[3,3],[12,11],[19,17],[19,16],[13,11],[14,11],[19,20],[20,19],[17,19],[16,19],[21,20],[17,18],[20,21],[18,17],[21,18],[17,20],[18,21],[20,17]]
+			},
+			{	//index 8, level 8 -- final level
+				px : 1,
+				py : 1,
 
-			gx : 19,
-			gy : 19,
+				gx : 19,
+				gy : 19,
 
-			walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[14,9],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
+				walls : [[0,2],[2,2],[1,2],[2,1],[4,0],[4,1],[4,2],[11,14],[12,14],[13,14],[14,14],[14,9],[15,14],[11,13],[15,13],[11,12],[15,12],[11,11],[15,11],[11,9],[12,9],[13,9]],
 
-			collectibles : [[13, 12]],
-
-			pushables : [[6,4],[6,5],[5,7],[6,8],[3,3],[7,6],[8,6],[7,7],[7,8],[6,9],[7,9],[12,11],[13,11],[14,11],[19,20],[19,18],[20,19],[17,19],[16,19],[21,20],[17,18],[20,21],[18,17],[21,18],[17,20],[18,21],[20,17],[2,3],[2,4],[3,5],[1,3],[4,3],[4,4],[4,5],[5,5],[7,3],[7,4]]
-		},
-	];
-
-	//variable to determine if gameplay is enabled
-	var play;
-
-	//the value to be displayed on the timer
-	var counter;
-
-	//player actor's current position [x, y]
-	var playerPos;
-
-	//current level
-	var currentLevel;
-
-	//"fake" tick function that is called whenever the player performs an action
-	//it is "fake" because it only happens at specific times, but simulates the passage of a single unit of time
-	var fakeTick = function () {
-		//subtract 1 from the counter, and update the text
-
-		if(!play){
-			return;
-		}
-
-		counter--;
-		PS.statusText(counter);
-
-		if(counter < 0){
-			initializeLevel(0);
-			counter = HARD_COUNTER_START;
-			PS.statusText(counter);
-
-			PS.audioPlay( "fx_bloop" )
-		}
-
-		//time-based objects should also change accordingly here
-
-	};
-
-	var drawPlayer = function (x, y) {
-		PS.color(x, y, PLAYER_COLOR);
-		PS.data(x, y, IS_FLOOR);
-	};
-
-	var initializeLevel = function (level) {
-
-		PS.gridColor( [(level/70) + 100, (level/70) + 100, (level/70) + 100] );
-
-		//disable playing
-		play = false;
-
-		//update level variable
-		currentLevel = level;
-
-		//clear grid, reset data of beads
-		PS.color( PS.ALL, PS.ALL, FLOOR_COLOR );
-		PS.data( PS.ALL, PS.ALL, IS_FLOOR ); // all floor
-
-		//place walls, goal, collectibles
-		if ( LEVEL_DATA[level].walls !== undefined ) {
-			for ( var i = 0; i < LEVEL_DATA[level].walls.length; i++ ) {
-				var pos = LEVEL_DATA[level].walls[i];
-				var x = pos[0];
-				var y = pos[1];
-				PS.color( x, y, WALL_COLOR );
-				PS.data( x, y, IS_WALL );
-			}
-		}
-
-		//place pushables
-		if ( LEVEL_DATA[level].pushables !== undefined ) {
-			for ( var i = 0; i < LEVEL_DATA[level].pushables.length; i++ ) {
-				var pos = LEVEL_DATA[level].pushables[i];
-				var x = pos[0];
-				var y = pos[1];
-				PS.color( x, y, PUSHABLE_COLOR );
-				PS.data( x, y, IS_PUSHBLOCK );
-			}
-		}
-
-		//place collectibles
-		if ( LEVEL_DATA[level].collectibles !== undefined ) {
-			for ( var i = 0; i < LEVEL_DATA[level].collectibles.length; i++ ) {
-				var pos = LEVEL_DATA[level].collectibles[i];
-				var x = pos[0];
-				var y = pos[1];
-				PS.color( x, y, COLLECTIBLE_COLOR );
-				PS.data( x, y, IS_COLLECTIBLE );
-			}
-		}
-
-		//place teleporters
-		if ( LEVEL_DATA[level].teleporters !== undefined ) {
-			for ( var i = 0; i < LEVEL_DATA[level].teleporters.length; i++ ) {
-				var pos = LEVEL_DATA[level].teleporters[i];
-				var x = pos[0];
-				var y = pos[1];
-				PS.color( x, y, TELEPORTER_COLOR );
-				PS.data( x, y, IS_TELEPORTER );
-			}
-		}
-
-		//place goal
-		if ( LEVEL_DATA[level].gx !== undefined ) {
-			PS.color(LEVEL_DATA[level].gx, LEVEL_DATA[level].gy, GOAL_COLOR);
-			PS.data(LEVEL_DATA[level].gx, LEVEL_DATA[level].gy, IS_GOAL);
-		}
-
-		//place actor
-		if ( LEVEL_DATA[level].px !== undefined ) {
-			drawPlayer(LEVEL_DATA[level].px, LEVEL_DATA[level].py);
-			if(playerPos !== undefined){
-				PS.color( playerPos[0], playerPos[1], FLOOR_COLOR );
-			}
-			playerPos = [LEVEL_DATA[level].px, LEVEL_DATA[level].py];
-			PS.color( playerPos[0], playerPos[1], PLAYER_COLOR );
-		}
-
-		//enable input
-		play = true;
-	};
-
-	var movePlayer = function(x, y){
-
-		if(!play){
-			//if unable to play at the moment, then don't
-			return;
-		}
-
-		if ((playerPos[0] + x) > GRID_X || (playerPos[0] + x) < 0 || (playerPos[1] + y) > GRID_Y || (playerPos[1] + y < 0)){
-			//illegal move, return
-			return;
-		}
-
-		var oldPos = playerPos;
-
-		var nx = (playerPos[0] + x);
-		var ny = (playerPos[1] + y);
-
-		var newData = PS.data(nx, ny);
-
-		if (newData === IS_WALL){
-			//it's a wall, don't do anything
-			PS.audioPlay( "perc_drum_snare" );
-			return;
-		}
-
-		if (newData === IS_PUSHBLOCK){
-			//check if block can move
-
-			if ((nx + x) > GRID_X || (nx + x) < 0 || (ny + y) > GRID_Y || (ny + y) < 0){
-				//illegal move, return
-				PS.audioPlay( "perc_drum_snare" );
+				collectibles : [[13, 12]],
+
+				pushables : [[6,4],[6,5],[5,7],[6,8],[3,3],[7,6],[8,6],[7,7],[7,8],[6,9],[7,9],[12,11],[13,11],[14,11],[19,20],[19,18],[20,19],[17,19],[16,19],[21,20],[17,18],[20,21],[18,17],[21,18],[17,20],[18,21],[20,17],[2,3],[2,4],[3,5],[1,3],[4,3],[4,4],[4,5],[5,5],[7,3],[7,4]]
+			},
+		];
+
+		//variable to determine if gameplay is enabled
+		var play;
+
+		//the value to be displayed on the timer
+		var counter;
+
+		//player actor's current position [x, y]
+		var playerPos;
+
+		//current level
+		var currentLevel;
+
+		//"fake" tick function that is called whenever the player performs an action
+		//it is "fake" because it only happens at specific times, but simulates the passage of a single unit of time
+		var fakeTick = function () {
+			//subtract 1 from the counter, and update the text
+
+			if(!play){
 				return;
 			}
 
-			var newData2 = PS.data(nx+x, ny+y);
+			counter--;
+			PS.statusText(counter);
 
-			if (newData2 === IS_WALL){
+			if(counter < 0){
+				initializeLevel(0);
+				counter = HARD_COUNTER_START;
+				PS.statusText(counter);
+
+				PS.audioPlay( "fx_bloop" )
+			}
+
+			//time-based objects should also change accordingly here
+
+		};
+
+		var drawPlayer = function (x, y) {
+			PS.color(x, y, PLAYER_COLOR);
+			PS.data(x, y, IS_FLOOR);
+		};
+
+		var initializeLevel = function (level) {
+
+			PS.gridColor( [(level/70) + 100, (level/70) + 100, (level/70) + 100] );
+
+			//disable playing
+			play = false;
+
+			//update level variable
+			currentLevel = level;
+
+			//clear grid, reset data of beads
+			PS.color( PS.ALL, PS.ALL, FLOOR_COLOR );
+			PS.data( PS.ALL, PS.ALL, IS_FLOOR ); // all floor
+
+			//place walls, goal, collectibles
+			if ( LEVEL_DATA[level].walls !== undefined ) {
+				for ( var i = 0; i < LEVEL_DATA[level].walls.length; i++ ) {
+					var pos = LEVEL_DATA[level].walls[i];
+					var x = pos[0];
+					var y = pos[1];
+					PS.color( x, y, WALL_COLOR );
+					PS.data( x, y, IS_WALL );
+				}
+			}
+
+			//place pushables
+			if ( LEVEL_DATA[level].pushables !== undefined ) {
+				for ( var i = 0; i < LEVEL_DATA[level].pushables.length; i++ ) {
+					var pos = LEVEL_DATA[level].pushables[i];
+					var x = pos[0];
+					var y = pos[1];
+					PS.color( x, y, PUSHABLE_COLOR );
+					PS.data( x, y, IS_PUSHBLOCK );
+				}
+			}
+
+			//place collectibles
+			if ( LEVEL_DATA[level].collectibles !== undefined ) {
+				for ( var i = 0; i < LEVEL_DATA[level].collectibles.length; i++ ) {
+					var pos = LEVEL_DATA[level].collectibles[i];
+					var x = pos[0];
+					var y = pos[1];
+					PS.color( x, y, COLLECTIBLE_COLOR );
+					PS.data( x, y, IS_COLLECTIBLE );
+				}
+			}
+
+			//place teleporters
+			if ( LEVEL_DATA[level].teleporters !== undefined ) {
+				for ( var i = 0; i < LEVEL_DATA[level].teleporters.length; i++ ) {
+					var pos = LEVEL_DATA[level].teleporters[i];
+					var x = pos[0];
+					var y = pos[1];
+					PS.color( x, y, TELEPORTER_COLOR );
+					PS.data( x, y, IS_TELEPORTER );
+				}
+			}
+
+			//place goal
+			if ( LEVEL_DATA[level].gx !== undefined ) {
+				PS.color(LEVEL_DATA[level].gx, LEVEL_DATA[level].gy, GOAL_COLOR);
+				PS.data(LEVEL_DATA[level].gx, LEVEL_DATA[level].gy, IS_GOAL);
+			}
+
+			//place actor
+			if ( LEVEL_DATA[level].px !== undefined ) {
+				drawPlayer(LEVEL_DATA[level].px, LEVEL_DATA[level].py);
+				if(playerPos !== undefined){
+					PS.color( playerPos[0], playerPos[1], FLOOR_COLOR );
+				}
+				playerPos = [LEVEL_DATA[level].px, LEVEL_DATA[level].py];
+				PS.color( playerPos[0], playerPos[1], PLAYER_COLOR );
+			}
+
+			//enable input
+			play = true;
+		};
+
+		var movePlayer = function(x, y){
+
+			if(!play){
+				//if unable to play at the moment, then don't
+				return;
+			}
+
+			if ((playerPos[0] + x) > GRID_X || (playerPos[0] + x) < 0 || (playerPos[1] + y) > GRID_Y || (playerPos[1] + y < 0)){
+				//illegal move, return
+				return;
+			}
+
+			var oldPos = playerPos;
+
+			var nx = (playerPos[0] + x);
+			var ny = (playerPos[1] + y);
+
+			var newData = PS.data(nx, ny);
+
+			if (newData === IS_WALL){
 				//it's a wall, don't do anything
 				PS.audioPlay( "perc_drum_snare" );
 				return;
 			}
 
-			if (newData2 === IS_COLLECTIBLE){
-				//would destroy a collectible, return
-				PS.audioPlay( "perc_drum_snare" );
-				return;
-			}
+			if (newData === IS_PUSHBLOCK){
+				//check if block can move
 
-			if (newData2 === IS_PUSHBLOCK){
-				//if it's another pushblock, return
-				PS.audioPlay( "perc_drum_snare" );
-				return;
-			}
-
-			if (newData2 === IS_GOAL){
-				//would block the goal, return
-				PS.audioPlay( "perc_drum_snare" );
-				return;
-			}
-
-			//move it and player if so, don't if not
-			PS.data(nx+x, ny+y, IS_PUSHBLOCK);
-			PS.color(nx+x, ny+y, PUSHABLE_COLOR);
-
-			PS.audioPlay( "fx_click" );
-
-			drawPlayer(nx, ny);
-			playerPos = [nx, ny];
-			PS.color(oldPos[0], oldPos[1], FLOOR_COLOR);
-
-			fakeTick();
-			return;
-
-		}
-
-		if(newData === IS_COLLECTIBLE){
-			counter += 50;
-			PS.audioPlay( "fx_blip" );
-
-			drawPlayer(nx, ny);
-			playerPos = [nx, ny];
-			PS.color(oldPos[0], oldPos[1], FLOOR_COLOR);
-
-			fakeTick();
-			return;
-		}
-
-		if (newData === IS_GOAL){
-			if(LEVEL_DATA.length > currentLevel + 1){
-
-				play = false;
-
-				for(var iterat = 0; iterat < 25; iterat++){
-					for(var iterat2 = 0; iterat2 < 25; iterat2++){
-						PS.color(iterat, iterat2, FLOOR_COLOR);
-						PS.data(iterat, iterat2, IS_FLOOR);
-					}
+				if ((nx + x) > GRID_X || (nx + x) < 0 || (ny + y) > GRID_Y || (ny + y) < 0){
+					//illegal move, return
+					PS.audioPlay( "perc_drum_snare" );
+					return;
 				}
 
-				initializeLevel(currentLevel + 1);
-				PS.audioPlay( "fx_boop" );
+				var newData2 = PS.data(nx+x, ny+y);
 
-				/*drawPlayer(nx, ny);
+				if (newData2 === IS_WALL){
+					//it's a wall, don't do anything
+					PS.audioPlay( "perc_drum_snare" );
+					return;
+				}
+
+				if (newData2 === IS_COLLECTIBLE){
+					//would destroy a collectible, return
+					PS.audioPlay( "perc_drum_snare" );
+					return;
+				}
+
+				if (newData2 === IS_PUSHBLOCK){
+					//if it's another pushblock, return
+					PS.audioPlay( "perc_drum_snare" );
+					return;
+				}
+
+				if (newData2 === IS_GOAL){
+					//would block the goal, return
+					PS.audioPlay( "perc_drum_snare" );
+					return;
+				}
+
+				//move it and player if so, don't if not
+				PS.data(nx+x, ny+y, IS_PUSHBLOCK);
+				PS.color(nx+x, ny+y, PUSHABLE_COLOR);
+
+				PS.audioPlay( "fx_click" );
+
+				drawPlayer(nx, ny);
 				playerPos = [nx, ny];
-				PS.color(oldPos[0], oldPos[1], FLOOR_COLOR);*/
+				PS.color(oldPos[0], oldPos[1], FLOOR_COLOR);
 
 				fakeTick();
 				return;
 
-			}else{
-				//initializeLevel(-1);
-				PS.statusText("You win!");
-				play = false;
-				PS.audioPlay( "fx_bloop" );
 			}
-		}
-		if(newData === IS_FLOOR){
-			drawPlayer(nx, ny);
-			playerPos = [nx, ny];
-			PS.color(oldPos[0], oldPos[1], FLOOR_COLOR);
 
-			fakeTick();
-			return;
-		}
-	};
+			if(newData === IS_COLLECTIBLE){
+				counter += 50;
+				PS.audioPlay( "fx_blip" );
 
+				drawPlayer(nx, ny);
+				playerPos = [nx, ny];
+				PS.color(oldPos[0], oldPos[1], FLOOR_COLOR);
 
-	return {
-		init : function(){
+				fakeTick();
+				return;
+			}
 
-			counter = HARD_COUNTER_START;
-			PS.statusText(counter);
+			if (newData === IS_GOAL){
+				if(LEVEL_DATA.length > currentLevel + 1){
 
-			PS.gridFade(120);
+					play = false;
 
-			//PS.statusText("working so far");
-			initializeLevel(0);
-		},
-		keydown : function(key) {
-			switch (key) {
-				case PS.KEY_ARROW_UP:
-				case 87:
-				case 119: {
-					movePlayer( 0, -1 );
-					break;
-				}
-				case PS.KEY_ARROW_DOWN:
-				case 83:
-				case 115: {
-					movePlayer( 0, 1 );
-					break;
-				}
-				case PS.KEY_ARROW_LEFT:
-				case 65:
-				case 97: {
-					movePlayer( -1, 0 );
-					break;
-				}
-				case PS.KEY_ARROW_RIGHT:
-				case 68:
-				case 100: {
-					movePlayer( 1, 0 );
-					break;
-				}
-				default: {
-					break;
+					for(var iterat = 0; iterat < 25; iterat++){
+						for(var iterat2 = 0; iterat2 < 25; iterat2++){
+							PS.color(iterat, iterat2, FLOOR_COLOR);
+							PS.data(iterat, iterat2, IS_FLOOR);
+						}
+					}
+
+					initializeLevel(currentLevel + 1);
+					PS.audioPlay( "fx_boop" );
+
+					/*drawPlayer(nx, ny);
+                    playerPos = [nx, ny];
+                    PS.color(oldPos[0], oldPos[1], FLOOR_COLOR);*/
+
+					fakeTick();
+					return;
+
+				}else{
+					//initializeLevel(-1);
+					PS.statusText("You win!");
+					play = false;
+					PS.audioPlay( "fx_bloop" );
 				}
 			}
-		}
-	};
-} () );
+			if(newData === IS_FLOOR){
+				drawPlayer(nx, ny);
+				playerPos = [nx, ny];
+				PS.color(oldPos[0], oldPos[1], FLOOR_COLOR);
+
+				fakeTick();
+				return;
+			}
+		};
+
+
+		return {
+			init : function(){
+
+				counter = HARD_COUNTER_START;
+				PS.statusText(counter);
+
+				PS.gridFade(120);
+
+				//PS.statusText("working so far");
+				initializeLevel(0);
+			},
+			keydown : function(key) {
+				switch (key) {
+					case PS.KEY_ARROW_UP:
+					case 87:
+					case 119: {
+						movePlayer( 0, -1 );
+						break;
+					}
+					case PS.KEY_ARROW_DOWN:
+					case 83:
+					case 115: {
+						movePlayer( 0, 1 );
+						break;
+					}
+					case PS.KEY_ARROW_LEFT:
+					case 65:
+					case 97: {
+						movePlayer( -1, 0 );
+						break;
+					}
+					case PS.KEY_ARROW_RIGHT:
+					case 68:
+					case 100: {
+						movePlayer( 1, 0 );
+						break;
+					}
+					default: {
+						break;
+					}
+				}
+			}
+		};
+	} () );
+}
 
 PS.init = function( system, options ) {
 	// Uncomment the following code line
