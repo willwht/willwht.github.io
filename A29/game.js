@@ -70,7 +70,6 @@ General layout:
  */
 
 var CD = ( function() {
-var CD = ( function() {
 	//"use strict";
 
 	//grid size variables for referencing
