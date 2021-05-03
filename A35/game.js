@@ -54,6 +54,12 @@ var WC = (function () {
 	//key for notes to be played (unimplemented for first prototype)
 	var key;
 
+	//string to be displayed on the status line
+	var dispString = "Points: ";
+
+	//points just gained storage string, to be displayed in front of points
+	var lastGainString;
+
 	//initial measurements of grid
 
 	var GridLength = 16;
@@ -92,6 +98,7 @@ var WC = (function () {
 
 			//reset color of all beads
 			PS.color(PS.ALL, PS.ALL, PS.COLOR_GRAY_LIGHT);
+			PS.border(PS.ALL, PS.ALL, 0);
 
 
 
@@ -154,7 +161,7 @@ var WC = (function () {
 				"piano_c3"
 			]
 
-			PS.debug(shiftedNote);
+			//PS.debug(shiftedNote);
 			PS.audioPlay(noteArray[shiftedNote]);
 		},
 
@@ -184,8 +191,10 @@ var WC = (function () {
 
 
 		startSequence : function(){
-			PS.statusText(0);
+			PS.statusText(dispString + "0");
+			willRestart = false;
 			canPlay = false;
+			remOverlap = 2;
 			this.genLevelBG();
 			this.genRandLevel();
 			this.displayNotes();
@@ -201,89 +210,212 @@ var WC = (function () {
 				return;
 			}
 
-
-
 			var positionX = placedNotes.length;
 			//PS.debug(placedNotes[positionX-1]);
 
-			if(positionX > GridLength - 5){
+			if(positionX > GridLength - 6){
 
-				if(!willRestart){
-					willRestart = true;
-					PS.statusText("Final level score: " + points.toString() + ". Click to replay.")
-					PS.audioPlay( "fx_powerup1" );
-					return;
-				}else{
-					PS.audioPlay( "fx_bloop" );
-					willRestart = false;
-					this.startSequence();
-					return;
-				}
-
-			}
-
-			if(positionX == 0){
-				if(noteSeq[0] == positionY){
-					//PS.debug("a");
-					points += 1;
-					placedNotes[positionX] = positionY;
-					PS.color(positionX + 2, positionY, PLAYER_COLOR);
-					PS.statusText(points);
-					this.playNote(positionY);
-					return;
-				}else{
-					//PS.debug("b");
-					points += 2;
-					placedNotes[positionX] = positionY;
-					PS.color(positionX + 2, positionY, PS.COLOR_BLUE);
-					PS.statusText(points);
-					this.playNote(positionY);
-					return;
-				}
-			}else{
-				if(positionX > 0){
-					var trueDiff = Math.abs(noteSeq[positionX] - noteSeq[positionX - 1]);
-					var yourDiff = Math.abs(positionY - placedNotes[positionX - 1]);
-
-					//PS.debug(trueDiff);
-					//PS.debug(yourDiff);
-
-					if(noteSeq[positionX] == positionY){
-						//PS.debug("d");
-						if(remOverlap > 0){
-							//PS.debug("e");
-							points += 3;
-							remOverlap--;
-						}else{
-							//PS.debug("f");
-							points += 1;
-						}
-						PS.color(positionX + 2, positionY, PLAYER_COLOR);
+				if(positionX == 0){
+					if(noteSeq[0] == positionY){
+						//PS.debug("a");
+						points += 1;
 						placedNotes[positionX] = positionY;
-						PS.statusText(points);
+						PS.color(positionX + 2, positionY, PLAYER_COLOR);
+						PS.statusText("+1 |" + dispString + points.toString());
 						this.playNote(positionY);
+						if(!willRestart){
+							willRestart = true;
+							PS.statusText("Final level score: " + points.toString() + "/" + (((GridLength - 4) * 2) + 2).toString() + ". Click to replay.")
+							PS.audioPlay( "fx_powerup1" );
+							return;
+						}else{
+
+						}
+						return;
+					}else{
+						//PS.debug("b");
+						points += 2;
+						placedNotes[positionX] = positionY;
+						PS.color(positionX + 2, positionY, PS.COLOR_BLUE);
+						PS.statusText("+2 |" + dispString + points.toString());
+						this.playNote(positionY);
+						if(!willRestart){
+							willRestart = true;
+							PS.statusText("Final level score: " + points.toString() + "/" + (((GridLength - 4) * 2) + 2).toString() + ". Click to replay.")
+							PS.audioPlay( "fx_powerup1" );
+							return;
+						}else{
+							PS.audioPlay( "fx_bloop" );
+							willRestart = false;
+							this.startSequence();
+							return;
+						}
 						return;
 					}
+				}else{
+					if(positionX > 0){
+						var trueDiff = Math.abs(noteSeq[positionX] - noteSeq[positionX - 1]);
+						var yourDiff = Math.abs(positionY - placedNotes[positionX - 1]);
 
-					if(yourDiff == trueDiff){
-						//PS.debug("g");
-						points += 2;
-						PS.color(positionX + 2, positionY, PS.COLOR_BLUE);
+						//PS.debug(trueDiff);
+						//PS.debug(yourDiff);
+
+						if(noteSeq[positionX] == positionY){
+							//PS.debug("d");
+							if(remOverlap > 0){
+								//PS.debug("e");
+								points += 3;
+								remOverlap--;
+								PS.color(positionX + 2, positionY, PLAYER_COLOR);
+								placedNotes[positionX] = positionY;
+								PS.statusText("+3 |" + dispString + points.toString());
+								this.playNote(positionY);
+								if(!willRestart){
+									willRestart = true;
+									PS.statusText("Final level score: " + points.toString() + "/" + (((GridLength - 4) * 2) + 2).toString() + ". Click to replay.")
+									PS.audioPlay( "fx_powerup1" );
+									return;
+								}else{
+									PS.audioPlay( "fx_bloop" );
+									willRestart = false;
+									this.startSequence();
+									return;
+								}
+								return;
+							}else{
+								//PS.debug("f");
+								points += 1;
+								PS.color(positionX + 2, positionY, PLAYER_COLOR);
+								placedNotes[positionX] = positionY;
+								PS.statusText("+1 |" + dispString + points.toString());
+								this.playNote(positionY);
+								if(!willRestart){
+									willRestart = true;
+									PS.statusText("Final level score: " + points.toString() + "/" + (((GridLength - 4) * 2) + 2).toString() + ". Click to replay.")
+									PS.audioPlay( "fx_powerup1" );
+									return;
+								}else{
+									PS.audioPlay( "fx_bloop" );
+									willRestart = false;
+									this.startSequence();
+									return;
+								}
+								return;
+							}
+						}
+
+						if(yourDiff == trueDiff){
+							//PS.debug("g");
+							points += 2;
+							PS.color(positionX + 2, positionY, PS.COLOR_BLUE);
+							placedNotes[positionX] = positionY;
+							PS.statusText("+2 |" + dispString + points.toString());
+							this.playNote(positionY);
+							if(!willRestart){
+								willRestart = true;
+								PS.statusText("Final level score: " + points.toString() + "/" + (((GridLength - 4) * 2) + 2).toString() + ". Click to replay.")
+								PS.audioPlay( "fx_powerup1" );
+								return;
+							}else{
+								PS.audioPlay( "fx_bloop" );
+								willRestart = false;
+								this.startSequence();
+								return;
+							}
+							return;
+						}else{
+							//PS.debug("h");
+							points += 1;
+							PS.color(positionX + 2, positionY, PS.COLOR_BLUE);
+							placedNotes[positionX] = positionY;
+							PS.statusText("+1 |" + dispString + points.toString());
+							this.playNote(positionY);
+							if(!willRestart){
+								willRestart = true;
+								PS.statusText("Final level score: " + points.toString() + "/" + (((GridLength - 4) * 2) + 2).toString() + ". Click to replay.")
+								PS.audioPlay( "fx_powerup1" );
+								return;
+							}else{
+								PS.audioPlay( "fx_bloop" );
+								willRestart = false;
+								this.startSequence();
+								return;
+							}
+							return;
+						}
+					}
+				}
+			}else{
+				if(positionX == 0){
+					if(noteSeq[0] == positionY){
+						//PS.debug("a");
+						points += 1;
 						placedNotes[positionX] = positionY;
-						PS.statusText(points);
+						PS.color(positionX + 2, positionY, PLAYER_COLOR);
+						PS.statusText("+1 |" + dispString + points.toString());
 						this.playNote(positionY);
 						return;
 					}else{
-						//PS.debug("h");
-						points += 1;
-						PS.color(positionX + 2, positionY, PS.COLOR_BLUE);
+						//PS.debug("b");
+						points += 2;
 						placedNotes[positionX] = positionY;
-						PS.statusText(points);
+						PS.color(positionX + 2, positionY, PS.COLOR_BLUE);
+						PS.statusText("+2 |" + dispString + points.toString());
 						this.playNote(positionY);
 						return;
 					}
+				}else{
+					if(positionX > 0){
+						var trueDiff = Math.abs(noteSeq[positionX] - noteSeq[positionX - 1]);
+						var yourDiff = Math.abs(positionY - placedNotes[positionX - 1]);
+
+						//PS.debug(trueDiff);
+						//PS.debug(yourDiff);
+
+						if(noteSeq[positionX] == positionY){
+							//PS.debug("d");
+							if(remOverlap > 0){
+								//PS.debug("e");
+								points += 3;
+								remOverlap--;
+								PS.color(positionX + 2, positionY, PLAYER_COLOR);
+								placedNotes[positionX] = positionY;
+								PS.statusText("+3 |" + dispString + points.toString());
+								this.playNote(positionY);
+								return;
+							}else{
+								//PS.debug("f");
+								points += 1;
+								PS.color(positionX + 2, positionY, PLAYER_COLOR);
+								placedNotes[positionX] = positionY;
+								PS.statusText("+1 |" + dispString + points.toString());
+								this.playNote(positionY);
+								return;
+							}
+						}
+
+						if(yourDiff == trueDiff){
+							//PS.debug("g");
+							points += 2;
+							PS.color(positionX + 2, positionY, PS.COLOR_BLUE);
+							placedNotes[positionX] = positionY;
+							PS.statusText("+2 |" + dispString + points.toString());
+							this.playNote(positionY);
+							return;
+						}else{
+							//PS.debug("h");
+							points += 1;
+							PS.color(positionX + 2, positionY, PS.COLOR_BLUE);
+							placedNotes[positionX] = positionY;
+							PS.statusText("+1 |" + dispString + points.toString());
+							this.playNote(positionY);
+							return;
+						}
+					}
 				}
 			}
+
+
 		},
 
 		getNoteSeq : function (){
@@ -341,6 +473,8 @@ PS.init = function( system, options ) {
 
 
 	// PS.gridSize( 8, 8 );
+
+
 	WC.startSequence()
 
 	// This is also a good place to display
@@ -357,7 +491,7 @@ PS.init = function( system, options ) {
 	// using ONLY alphabetic characters (a-z).
 	// No numbers, spaces, punctuation or special characters!
 
-	const TEAM = "topaz";
+	/*const TEAM = "topaz";
 
 	// This code should be the last thing
 	// called by your PS.init() handler.
@@ -371,7 +505,8 @@ PS.init = function( system, options ) {
 		PS.dbEvent( TEAM, "startup", user );
 		PS.dbSend( TEAM, PS.CURRENT, { discard : true } );
 	}, { active : true } );
-	
+	*/
+
 	// Change the false in the final line above to true
 	// before deploying the code to your Web site.
 };
@@ -394,6 +529,13 @@ PS.touch = function( x, y, data, options ) {
 
 	// Add code here for mouse clicks/touches
 	// over a bead.
+
+	if(WC.getRestartStatus()){
+		PS.audioPlay( "fx_bloop" );
+		//willRestart = false;
+		WC.startSequence();
+		return;
+	}
 
 	if(x != 0){
 		return;
