@@ -491,7 +491,7 @@ PS.init = function( system, options ) {
 	// using ONLY alphabetic characters (a-z).
 	// No numbers, spaces, punctuation or special characters!
 
-	/*const TEAM = "topaz";
+	const TEAM = "topaz";
 
 	// This code should be the last thing
 	// called by your PS.init() handler.
@@ -505,7 +505,7 @@ PS.init = function( system, options ) {
 		PS.dbEvent( TEAM, "startup", user );
 		PS.dbSend( TEAM, PS.CURRENT, { discard : true } );
 	}, { active : true } );
-	*/
+
 
 	// Change the false in the final line above to true
 	// before deploying the code to your Web site.
