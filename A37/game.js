@@ -292,6 +292,7 @@ var WC = (function () {
 					PS.timerStop(theTimer);
 					PS.statusText(dispString + "0");
 					canPlay = true;
+					engaged = true;
 				}
 			}
 			PS.statusText(quotes[Math.min(4, Math.floor(Math.random() * quotes.length))]);
